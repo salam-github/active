@@ -1,53 +1,78 @@
-# TinyScanner
+# TinyScanner: A Simple Port Scanner
 
-TinyScanner is a simple, command-line port scanner designed to detect open TCP and UDP ports on a target host. This tool is intended for educational purposes and network administrators looking to check their network's security.
+## Overview
 
-## Disclaimer
+TinyScanner is a lightweight, command-line tool designed for network administrators, security professionals, and technology enthusiasts to perform basic port scanning operations. It supports scanning both TCP and UDP ports to identify open or potentially filtered ports on a target host. This tool is particularly useful for network diagnostics, security audits, and educational purposes.
 
-Use TinyScanner responsibly. Scanning networks without permission is illegal and unethical. Ensure you have explicit consent from the network owner before scanning. This tool is provided for educational purposes only, and the developer assumes no liability for misuse or illegal activities.
+## How to Run TinyScanner
 
-## Features
+### Prerequisites
 
-- TCP and UDP port scanning
-- Scans individual ports or ranges of ports
-- Identifies open ports and the services running on them
+- Python 3.x installed on your system.
+- Network access to the host you intend to scan.
 
-## Installation
+### Running the Scanner
 
-TinyScanner requires Python 3.6 or higher. Clone this repository or download the `tinyscanner` script directly to your local machine.
+1. **Clone or download the TinyScanner script** to your local machine.
 
-## Usage
+2. **Open a terminal or command prompt** and navigate to the directory containing `tinyscanner.py`.
 
-Run TinyScanner from the command line, specifying the target host and ports to scan. You must include at least one protocol flag (`-t` for TCP, `-u` for UDP) to conduct a scan.
+3. **Execute the script** with the required parameters:
+python tinyscanner.py <host> <port/port-range> [-u] [-t]
 
-### Syntax
+markdown
+Copy code
+- `<host>`: The IP address or hostname of the target machine.
+- `<port/port-range>`: Specify a single port (e.g., 80) or a range of ports (e.g., 20-80).
+- `-u`: Perform a UDP scan (optional).
+- `-t`: Perform a TCP scan (optional).
 
-```python
-python main.py <host> <port/port-range> [options]
-```
+**Example**:
+python tinyscanner.py 192.168.1.1 80-90 -t -u
 
-### Options
-
-- `-t`: Perform a TCP scan (required if UDP is not specified)
-- `-u`: Perform a UDP scan (required if TCP is not specified)
-- `<host>`: The target IP address or hostname
-- `<port/port-range>`: A single port (e.g., `80`) or a range of ports (e.g., `80-100`)
-
-### Examples
-
-- Scan a single TCP port: `python main.py -t 192.168.1.1 80`
-- Scan a range of TCP ports: `python main.py -t 192.168.1.1 20-25`
-- Scan a single UDP port: `python main.py -u 192.168.1.1 53`
-- Scan a range of UDP ports: `python main.py -u 192.168.1.1 1000-1005`
+vbnet
+Copy code
+This command scans ports 80 through 90 on the host `192.168.1.1` for both TCP and UDP protocols.
 
 ## How It Works
 
-TinyScanner creates a socket connection using the specified protocol (TCP or UDP) to the target port(s). For TCP scans, it attempts to establish a three-way handshake. If successful, the port is considered open. For UDP scans, due to the connectionless nature of UDP, the scanner sends an empty packet and listens for a response. No response or an ICMP unreachable error typically indicates the port is closed or filtered.
+TinyScanner utilizes Python's `socket` module to attempt connections on specified ports. For TCP scans, it tries to establish a connection using the `connect_ex` method. An open port is identified if the connection is successful. For UDP scans, due to the connectionless nature of UDP, the scanner sends a basic payload and waits for a response. If no response is received, the port is considered open/filtered. The scanner leverages multi-threading to perform scans concurrently, reducing the overall scan time.
 
-## Contributing
+## Disclaimers and Challenges
 
-Contributions to TinyScanner are welcome. Please ensure you follow ethical guidelines and use the tool responsibly.
+### UDP Scanning
 
-## License
+Detecting open UDP ports presents unique challenges due to the protocol's connectionless design. Unlike TCP, a lack of response from a UDP port does not definitively indicate the port's status. As such, TinyScanner may report UDP ports as "open/filtered" or "open/filtered (no response)" based on the absence of a response or an ICMP port unreachable message. This method is chosen for its simplicity and practicality for basic scans, though it may not always provide conclusive results.
 
-TinyScanner is released under the MIT License. See the LICENSE file for more details.
+### Legal and Ethical Considerations
+
+Port scanning can be interpreted as intrusive by network operators. Always ensure you have explicit permission to scan the network or host in question. Unauthorized scanning may be illegal or violate local policies.
+
+## Testing Locally with Server Code
+
+To aid in testing TinyScanner, we provide a simple server script capable of running both TCP and UDP servers on specified ports. This script can simulate a real-world environment on your local machine for safe and convenient testing.
+
+### Running the Server Script
+
+1. Save the provided server script as `servers.py`.
+
+2. Run the script with Python, specifying the starting port and the number of servers:
+python servers.py <start_port> <num_servers>
+
+csharp
+Copy code
+This will start alternating TCP and UDP servers on consecutive ports beginning from `<start_port>`.
+
+### Example
+
+To start 10 servers beginning at port 80 (5 TCP and 5 UDP servers on alternating ports):
+python servers.py 80 10
+
+python
+Copy code
+
+This setup allows you to test TinyScanner's functionality by scanning your localhost (`127.0.0.1`) on the ports you've opened with the server script.
+
+## Conclusion
+
+TinyScanner is a straightforward tool for basic port scanning tasks. While it has limitations, particularly in UDP port detection, it serves as an educational resource and a starting point for more complex network diagnostics. Always use TinyScanner responsibly and with permission.
