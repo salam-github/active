@@ -38,7 +38,7 @@ def start_scan(host, port, protocol):
     return thread
 
 def main():
-    parser = ArgumentParser(description="TinyScanner: A simple port scanner")
+    parser = ArgumentParser(description="TinyScanner: A simple port scanner", usage="tinyscanner [OPTIONS] HOST PORT")
     parser.add_argument("host", help="The host to scan")
     parser.add_argument("port", help="Single port or range of ports to scan (e.g., 80 or 20-80)")
     parser.add_argument("-u", "--udp", action="store_true", help="Perform a UDP scan")
